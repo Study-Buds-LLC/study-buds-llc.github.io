@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sticker Designer</title>
+<style>
+:root{--bg:#f3f6fb;--panel:#fff;--accent:#2563eb;--muted:#64748b;}
+body{margin:0;font-family:Inter,Arial,sans-serif;background:var(--bg);color:#0f172a;}
+.app{max-width:1100px;margin:20px auto;display:grid;grid-template-columns:320px 1fr;gap:18px;padding:0 10px;}
+.panel{background:var(--panel);border-radius:12px;padding:14px;box-shadow:0 6px 18px rgba(12,16,24,0.06);}
+h2{margin:0 0 10px;font-size:16px;}
+.row{display:flex;align-items:center;gap:8px;margin-bottom:10px;}
+label{font-size:13px;color:var(--muted);}
+input[type=color]{width:40px;height:34px;border:none;}
+input[type=range]{flex:1;}
+button{cursor:pointer;border:none;padding:6px 10px;border-radius:8px;background:var(--accent);color:#fff;}
+button.ghost{background:transparent;color:var(--muted);border:1px solid #e6eefc;}
+canvas{border-radius:8px;background:#fff;}
+.canvas-wrap{position:relative;}
+.overlay-object{pointer-events: auto; position:absolute;touch-action:none;user-select:none;cursor:move;transition:transform 0.1s;}
+.text-box{padding:6px 8px;border-radius:6px;background:rgba(255,255,255,0.7);border:1px dashed transparent;}
+.text-box.selected{outline:2px solid rgba(37,99,235,0.3);background:rgba(255,255,255,0.8);}
+.sticker{display:flex;align-items:center;justify-content:center;width:96px;height:96px;border-radius:16px;background:white;box-shadow:0 4px 12px rgba(0,0,0,0.2);font-size:48px;text-align:center;line-height:1;}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="panel">
+    <h2>Tools</h2>
+    <div class="row">
+      <label>Mode</label>
+      <select id="mode" style="margin-left:auto">
+        <option value="draw">Draw</option>
+        <option value="erase">Erase</option>
+        <option value="move">Move</option>
+        <option value="text">Add text</option>
+      </select>
+    </div>
+    <div class="row">
+      <label>Brush</label>
+      <input type="color" id="color" value="#0f172a">
+      <input type="range" id="size" min="1" max="60" value="6">
+    </div>
+    <div class="row">
+      <label>Popular Stickers</label>
+      <button class="ghost" data-sticker="🙂">🙂</button>
+      <button class="ghost" data-sticker="⭐">⭐</button>
+      <button class="ghost" data-sticker="📚">📚</button>
+    </div>
+    <div class="row">
+      <label>Other Stickers</label>
+      <select id="stickerDropdown" style="flex:1;margin-left:4px;">
+        <option value="🎮">Game Controller</option>
+        <option value="🐱">Cat</option>
+        <option value="🌸">Flower</option>
+        <option value="🚀">Rocket</option>
+        <option value="🍔">Burger</option>
+      </select>
+      <button id="addDropdownSticker" class="ghost">Add</button>
+    </div>
+    <div class="row">
+      <label>Text</label>
+      <input id="textInput" placeholder="Type text">
+      <button id="addText" class="ghost">Add</button>
+    </div>
+    <div class="row">
+      <label>Background</label>
+      <input id="bgUpload" type="file" accept="image/*">
+      <button id="clearBg" class="ghost">Clear</button>
+    </div>
+    <h2>Actions</h2>
+    <div class="row">
+      <button id="undoBtn" class="ghost">Undo</button>
+      <button id="clearBtn" class="ghost">Clear</button>
+      <button id="exportBtn" class="ghost">Export PNG</button>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2>Designer</h2>
+    <div class="canvas-wrap">
+      <canvas id="designerCanvas" width="800" height="540"></canvas>
+      <div id="overlay" style="position:absolute;top:0;left:0;right:0;bottom:0;pointer-events:none;"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const canvas=document.getElementById('designerCanvas');
+const overlay=document.getElementById('overlay');
+const ctx=canvas.getContext('2d');
+const modeEl=document.getElementById('mode');
+const colorEl=document.getElementById('color');
+const sizeEl=document.getElementById('size');
+const undoBtn=document.getElementById('undoBtn');
+const clearBtn=document.getElementById('clearBtn');
+const exportBtn=document.getElementById('exportBtn');
+const addTextBtn=document.getElementById('addText');
+const textInput=document.getElementById('textInput');
+const bgUpload=document.getElementById('bgUpload');
+const clearBg=document.getElementById('clearBg');
+const stickerBtns=document.querySelectorAll('.panel button[data-sticker]');
+const stickerDropdown=document.getElementById('stickerDropdown');
+const addDropdownSticker=document.getElementById('addDropdownSticker');
+
+let drawing=false, history=[], objects=[], bgImage=null, selectedId=null;
+
+// Drawing
+canvas.addEventListener('pointerdown', e=>{
+  const mode=modeEl.value;
+  const rect=canvas.getBoundingClientRect();
+  const x=e.clientX-rect.left;
+  const y=e.clientY-rect.top;
+  if(mode==='draw'||mode==='erase'){
+    drawing=true;
+    ctx.beginPath();
+    ctx.lineWidth=parseInt(sizeEl.value);
+    ctx.lineCap='round';
+    ctx.strokeStyle=(mode==='erase')?'#fff':colorEl.value;
+    ctx.moveTo(x,y);
+  } else if(mode==='text'){addTextAt(x,y);}
+});
+canvas.addEventListener('pointermove', e=>{if(!drawing)return; const rect=canvas.getBoundingClientRect(); ctx.lineTo(e.clientX-rect.left,e.clientY-rect.top); ctx.stroke();});
+canvas.addEventListener('pointerup', e=>{if(drawing){drawing=false; ctx.closePath(); saveHistory();}});
+canvas.addEventListener('pointerleave', e=>{if(drawing){drawing=false; ctx.closePath(); saveHistory();}});
+
+// History
+function saveHistory(){history.push(canvas.toDataURL()); if(history.length>50)history.shift();}
+function undo(){if(history.length<2)return clearCanvas(); history.pop(); const img=new Image(); img.onload=()=>ctx.drawImage(img,0,0,canvas.width,canvas.height); img.src=history[history.length-1];}
+function clearCanvas(){ctx.clearRect(0,0,canvas.width,canvas.height); redrawAll(); saveHistory();}
+
+// Background
+bgUpload.addEventListener('change', e=>{const f=e.target.files[0]; if(!f)return; const reader=new FileReader(); reader.onload=ev=>{const img=new Image(); img.onload=()=>{bgImage=img; redrawAll(); saveHistory();}; img.src=ev.target.result;}; reader.readAsDataURL(f);});
+clearBg.addEventListener('click', ()=>{bgImage=null; redrawAll(); saveHistory();});
+function redrawAll(){ctx.clearRect(0,0,canvas.width,canvas.height); if(bgImage)ctx.drawImage(bgImage,0,0,canvas.width,canvas.height); if(history.length>0){const img=new Image(); img.onload=()=>ctx.drawImage(img,0,0,canvas.width,canvas.height); img.src=history[history.length-1];}}
+
+// Text & Sticker
+function createTextElement(text,x,y){const id='obj_'+Date.now(); const div=document.createElement('div'); div.className='overlay-object text-box'; div.style.left=x+'px'; div.style.top=y+'px'; div.innerText=text; div.dataset.id=id; makeDraggable(div); overlay.appendChild(div); objects.push({id,type:'text',dom:div});}
+function addTextAt(x,y){const txt=textInput.value.trim(); if(!txt)return; createTextElement(txt,x,y);}
+function createStickerElement(emoji,x,y){const id='obj_'+Date.now(); const div=document.createElement('div'); div.className='overlay-object sticker'; div.style.left=x+'px'; div.style.top=y+'px'; div.innerHTML=emoji; div.dataset.id=id; makeDraggable(div); overlay.appendChild(div); objects.push({id,type:'sticker',dom:div});}
+
+// Draggable
+function makeDraggable(el){let down=false,startX,startY,origX,origY; el.addEventListener('pointerdown', e=>{if(modeEl.value==='move'||modeEl.value==='text'){down=true; el.setPointerCapture(e.pointerId); startX=e.clientX; startY=e.clientY; origX=parseFloat(el.style.left); origY=parseFloat(el.style.top); selectObject(el.dataset.id);}}); el.addEventListener('pointermove', e=>{if(!down)return; el.style.left=(origX+e.clientX-startX)+'px'; el.style.top=(origY+e.clientY-startY)+'px';}); ['pointerup','pointercancel','pointerleave'].forEach(ev=>el.addEventListener(ev,e=>down=false)); el.addEventListener('click', e=>{e.stopPropagation(); selectObject(el.dataset.id);});}
+function selectObject(id){selectedId=id; overlay.querySelectorAll('.overlay-object').forEach(d=>d.classList.remove('selected')); const obj=objects.find(o=>o.id===id); if(obj)obj.dom.classList.add('selected');}
+
+// Sticker buttons
+stickerBtns.forEach(b=>b.addEventListener('click',()=>createStickerElement(b.dataset.sticker,50,50)));
+addDropdownSticker.addEventListener('click',()=>createStickerElement(stickerDropdown.value,100,100));
+
+// Text button
+addTextBtn.addEventListener('click', ()=>{const txt=textInput.value.trim(); if(!txt)return; createTextElement(txt,80,80);});
+
+// Undo/Clear/Export
+undoBtn.addEventListener('click', undo);
+clearBtn.addEventListener('click', clearCanvas);
+exportBtn.addEventListener('click', ()=>{
+  const out=document.createElement('canvas'); out.width=canvas.width; out.height=canvas.height; const outCtx=out.getContext('2d');
+  if(bgImage) outCtx.drawImage(bgImage,0,0,out.width,out.height);
+  outCtx.drawImage(canvas,0,0);
+  objects.forEach(o=>{
+    const rect=o.dom.getBoundingClientRect();
+    const canvasRect=canvas.getBoundingClientRect();
+    const x=rect.left-canvasRect.left;
+    const y=rect.top-canvasRect.top;
+    if(o.type==='text'){ const style=window.getComputedStyle(o.dom); outCtx.font=`${style.fontWeight} ${parseFloat(style.fontSize)}px ${style.fontFamily}`; outCtx.fillStyle=style.color; outCtx.fillText(o.dom.innerText,x,y+parseFloat(style.fontSize));}
+    else if(o.type==='sticker'){ outCtx.font='48px serif'; outCtx.fillText(o.dom.innerHTML,x,y+48);}
+  });
+  const data=out.toDataURL('image/png'); window.open(data);
+});
+</script>
+</body>
+</html>
