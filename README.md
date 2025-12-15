@@ -19,7 +19,7 @@ Study Buds is a friendly, community-driven platform designed to help students:
 ## 📍 Explore the Website
 
 Visit our site here:  
-[Study Buds Website](https://study-buds-llc.github.io/study-buds/)
+[Study Buds Website](https://study-buds-llc.github.io/Study-Buds/)
 
 Some of the key pages and features include:
 
