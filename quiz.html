@@ -1,230 +1,405 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Study Buds Math Quiz</title>
 
-<!-- Font Awesome for nice icons -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
-
 <style>
-body { font-family: Arial, sans-serif; background:#f7f9fc; margin:0; display:flex; min-height:100vh; }
-.sidebar { background-color:#3498db; color:white; padding:20px; width:180px; display:flex; flex-direction:column; gap:10px; }
-.sidebar h2 { margin-top:0; text-align:center; }
-.question-number { background: rgba(255,255,255,0.2); padding:8px; border-radius:5px; text-align:center; cursor:pointer; transition: background 0.3s; user-select:none; }
-.question-number.active { background:white; color:#3498db; font-weight:bold; }
-.question-number.correct { background:#2ecc71; color:white; }
-.question-number.wrong { background:#e74c3c; color:white; }
-.question-number.skipped { background:#7f8c8d; color:white; opacity:0.6; cursor:not-allowed; }
+:root{
+  --blue:#4f8df7;
+  --soft:#eef4ff;
+  --green:#22c55e;
+  --red:#ef4444;
+  --gray:#9ca3af;
+}
 
-.quiz-container { flex-grow:1; display:flex; flex-direction:column; justify-content:center; align-items:center; padding:30px; text-align:center; }
-.question { font-size:20px; margin-bottom:15px; }
-.question-hint { font-style:italic; color:#555; margin-bottom:15px; }
+body{
+  margin:0;
+  font-family:system-ui, Arial, sans-serif;
+  background:#f4f7fb;
+  display:flex;
+  min-height:100vh;
+}
 
-/* Normal answer input */
-input[type="text"] { padding:8px; font-size:18px; width:150px; text-align:center; border:2px solid #ccc; border-radius:5px; }
+/* Sidebar */
+.sidebar{
+  width:190px;
+  background:#fff;
+  border-right:1px solid #e5e7eb;
+  padding:16px;
+}
+.sidebar h2{
+  text-align:center;
+  margin:8px 0 16px;
+}
+.q-num{
+  padding:10px;
+  margin-bottom:8px;
+  border-radius:8px;
+  background:var(--soft);
+  text-align:center;
+  cursor:pointer;
+  font-weight:600;
+}
+.q-num.active{ background:var(--blue); color:#fff; }
+.q-num.correct{ background:var(--green); color:#fff; }
+.q-num.wrong{ background:var(--red); color:#fff; }
+.q-num.skipped{ background:var(--gray); color:#fff; opacity:.6; }
+
+/* Main */
+.main{
+  flex:1;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+}
+.card{
+  background:#fff;
+  width:100%;
+  max-width:520px;
+  padding:28px;
+  border-radius:16px;
+  box-shadow:0 10px 30px rgba(0,0,0,.08);
+}
+
+.hint{
+  font-size:14px;
+  color:#6b7280;
+}
+.question{
+  font-size:20px;
+  margin:10px 0 20px;
+}
+
+input{
+  width:100%;
+  padding:12px;
+  font-size:18px;
+  border-radius:10px;
+  border:2px solid #e5e7eb;
+}
+input:focus{
+  outline:none;
+  border-color:var(--blue);
+}
 
 /* Fraction input */
-.fraction { display:none; margin:auto; }
-.fraction input { width:60px; text-align:center; font-size:18px; padding:5px; border:2px solid #ccc; border-radius:5px; display:block; margin:0 auto; }
-.fraction .divider { width:60px; height:2px; background:#000; margin:2px auto; }
+.fraction{
+  display:none;
+  text-align:center;
+}
+.fraction input{
+  width:120px;
+  margin:6px auto;
+}
+.fraction-line{
+  width:130px;
+  height:2px;
+  background:#111;
+  margin:4px auto;
+}
 
 /* Buttons */
-.buttons { margin-top:15px; display:flex; gap:10px; }
-button { padding:10px 20px; border:none; background-color:#3498db; color:white; border-radius:5px; font-size:16px; cursor:pointer; transition: background 0.3s; }
-button:hover { background-color:#2980b9; }
+.buttons{
+  display:flex;
+  gap:10px;
+  margin-top:18px;
+}
+button{
+  flex:1;
+  padding:12px;
+  font-size:16px;
+  border:none;
+  border-radius:10px;
+  cursor:pointer;
+}
+.primary{ background:var(--blue); color:#fff; }
+.secondary{ background:#e5e7eb; }
 
-.score { margin-top:20px; font-weight:bold; color:#2c3e50; }
+.score{
+  margin-top:16px;
+  font-weight:700;
+}
 
-/* Worm animation */
-.worm { display:none; position:relative; margin-top:40px; width:200px; height:100px; animation: wiggle 1s infinite ease-in-out; }
-@keyframes wiggle { 0%,100%{transform:translateY(0);} 50%{transform:translateY(-5px);} }
-.segment { width:40px; height:40px; background-color:#7bed9f; border:3px solid #27ae60; border-radius:50%; position:absolute; top:30px; }
-.segment:nth-child(1){left:0;} .segment:nth-child(2){left:35px;} .segment:nth-child(3){left:70px;} .segment:nth-child(4){left:105px;} .segment:nth-child(5){left:140px;}
-.face { position:absolute; top:30px; left:140px; width:40px; height:40px; border-radius:50%; border:3px solid #27ae60; background-color:#7bed9f; }
-.eye { width:8px; height:8px; background:black; border-radius:50%; position:absolute; top:12px; }
-.eye.left { left:8px; } .eye.right { right:8px; }
-.mouth { width:20px; height:10px; border:2px solid black; position:absolute; bottom:8px; left:9px; border-radius:0 0 20px 20px; }
-.mouth.sad { border-radius:20px 20px 0 0; bottom:12px; transform:rotate(180deg); }
-
-@media(max-width:700px){ body{flex-direction:column;} .sidebar{flex-direction:row;width:100%;overflow-x:auto;justify-content:center;} .question-number{min-width:40px;font-size:14px;} }
+/* Mobile */
+@media(max-width:700px){
+  body{ flex-direction:column; }
+  .sidebar{
+    width:100%;
+    display:flex;
+    overflow-x:auto;
+    gap:8px;
+  }
+  .q-num{ min-width:42px; }
+}
 </style>
 </head>
+
 <body>
 
-<div class="sidebar" id="sidebar"><h2>Quiz</h2></div>
+<div class="sidebar" id="sidebar">
+  <h2>Math Quiz</h2>
+</div>
 
-<div class="quiz-container">
-    <div class="question-hint" id="hint"></div>
-    <div class="question" id="question"></div>
+<div class="main">
+  <div class="card">
+    <div id="hint" class="hint"></div>
+    <div id="question" class="question"></div>
 
-    <!-- Normal answer -->
-    <input type="text" id="answer" placeholder="Your answer">
+    <input id="answer" placeholder="Your answer">
 
-    <!-- Fraction answer -->
-    <div class="fraction" id="fraction-input">
-        <input type="text" id="numerator" placeholder="numerator">
-        <div class="divider"><i class="fa-solid fa-minus"></i></div>
-        <input type="text" id="denominator" placeholder="denominator">
+    <div id="fractionBox" class="fraction">
+      <input id="num" placeholder="numerator">
+      <div class="fraction-line"></div>
+      <input id="den" placeholder="denominator">
     </div>
 
     <div class="buttons">
-        <button id="submitBtn" onclick="submitAnswer()"><i class="fa-solid fa-check"></i> Submit</button>
-        <button id="skipBtn" onclick="skipQuestion()"><i class="fa-solid fa-forward"></i> Skip</button>
-        <button id="nextBtn" style="display:none;" onclick="nextQuestion()"><i class="fa-solid fa-arrow-right"></i> Next</button>
+      <button class="primary" onclick="submitAnswer()">Submit</button>
+      <button class="secondary" onclick="skipQuestion()">Skip</button>
+      <button class="primary" id="nextBtn" onclick="nextQuestion()" style="display:none">
+        Next
+      </button>
     </div>
-    <div class="score" id="score"></div>
 
-    <div class="worm" id="worm">
-        <div class="segment"></div>
-        <div class="segment"></div>
-        <div class="segment"></div>
-        <div class="segment"></div>
-        <div class="face">
-            <div class="eye left"></div>
-            <div class="eye right"></div>
-            <div class="mouth" id="mouth"></div>
-        </div>
-    </div>
+    <div id="score" class="score"></div>
+  </div>
 </div>
 
-<!-- Audio embedded as base64 -->
-<audio id="correctSound" src="correct.mp3"></audio>
-<audio id="wrongSound" src="wrong.mp3"></audio>
+<!-- SFX -->
+<audio id="sfx-correct" src="correct.mp3" preload="auto"></audio>
+<audio id="sfx-wrong" src="wrong.mp3" preload="auto"></audio>
 
 <script>
-// -------------------------
-// Quiz Data
-// -------------------------
-const questionBank = [
-    {type:"story", q:"Alice baked 12 cupcakes. She gave 3 to her friend and 2 to her neighbor. How many cupcakes are left?", a:"7", hint:"Subtract what she gave away."},
-    {type:"fraction", q:"I ate ½ of a pizza and my sister ate ¼. How much pizza was eaten in total?", a:"3/4", hint:"Add fractions carefully."},
-    {type:"fraction", q:"Tom drank 2/3 of juice in morning and 1/3 in afternoon. Total?", a:"3/3", hint:"Add fractions."},
-    {type:"factor", q:"Which of these is a factor of 18: 2, 5, 6, 7?", a:"2,6", hint:"Factors divide 18 evenly."},
-    {type:"multiple", q:"Which number is a multiple of 7: 14, 15, 20, 21?", a:"14,21", hint:"Multiples of 7."},
-    {type:"normal", q:"What is 9 + 8?", a:"17", hint:"Simple addition."},
-    {type:"normal", q:"What is 12 ÷ 4?", a:"3", hint:"Simple division."}
+// ==========================
+// JSON-style question library
+// ==========================
+const QUESTION_LIBRARY = [
+  {
+    type: "normal",
+    q: "9 + 8 = ?",
+    a: "17",
+    hint: "Add" },
+  {
+    type: "normal",
+    q: "15 − 6 = ?",
+    a: "9",
+    hint: "Subtract" },
+  {
+    type: "normal",
+    q: "6 × 4 = ?",
+    a: "24",
+    hint: "Multiply" },
+  {
+    type: "normal",
+    q: "12 ÷ 3 = ?",
+    a: "4",
+    hint: "Divide" },
+  {
+    type: "fraction",
+    q: "1/2 + 1/4 = ?",
+    a: "3/4",
+    hint: "Add fractions" },
+  {
+    type: "fraction",
+    q: "2/3 + 1/3 = ?",
+    a: "3/3",
+    hint: "Add fractions" },
+  {
+    type: "fraction",
+    q: "3/4 + 1/4 = ?",
+    a: "4/4",
+    hint: "Whole" },
+  {
+    type: "story",
+    q: "Anna has 10 apples and eats 3. How many left?",
+    a: "7",
+    hint: "Subtract" },
+  {
+    type: "story",
+    q: "Candy costs $2 each. Buy 4. Total cost?",
+    a: "8",
+    hint: "Multiply" },
+  {
+    type: "normal",
+    q: "20 − 9 = ?",
+    a: "11",
+    hint: "Subtract" },
+  {
+    type: "normal",
+    q: "5 × 5 = ?",
+    a: "25",
+    hint: "Multiply" },
+  {
+    type: "normal",
+    q: "18 ÷ 6 = ?",
+    a: "3",
+    hint: "Divide" },
+  {
+    type: "normal",
+    q: "7 + 6 = ?",
+    a: "13",
+    hint: "Add" },
+  {
+    type: "normal",
+    q: "30 − 10 = ?",
+    a: "20",
+    hint: "Subtract" },
+  {
+    type: "normal",
+    q: "8 × 3 = ?",
+    a: "24",
+    hint: "Multiply" },
+  {
+    type: "normal",
+    q: "16 ÷ 4 = ?",
+    a: "4",
+    hint: "Divide" },
+  {
+    type: "normal",
+    q: "14 + 5 = ?",
+    a: "19",
+    hint: "Add" },
+  {
+    type: "normal",
+    q: "9 × 2 = ?",
+    a: "18",
+    hint: "Multiply" },
+  {
+    type: "normal",
+    q: "11 + 7 = ?",
+    a: "18",
+    hint: "Add" },
+  {
+    type: "normal",
+    q: "21 ÷ 7 = ?",
+    a: "3",
+    hint: "Divide" },
+  {
+    type: "story",
+    q: "Mono has 30 StudyCoins, he went to fruit store in Lumo Market to buy some apples and oranges. <br /> The Seller Told Him This: <br /> <br /> <div style='border: 2px solid black; padding: 10px; border-radius: 6px;'> 1 Apple = 10 StudyCoins <br /> 1 Orange = 5 StudyCoins </div> <br /> How much money did Mono spend if he wants 1 Apple and 1 Orange?",
+    a: "15",
+    hint: "Finding Totals" },
+  {
+    type: "fraction",
+    q: "2/3 + 2/6 = ?",
+    a: "4/6",
+    hint: "Make Denominators Same. Then Add" },
+  {
+    type: "story",
+    q: "Alex loves eating. <br /> On <b>Monday</b> he ate 5 Burgers. On <b>Thursday</b> he ate 10 Burgers. How Much Did He Eat In Total?",
+    a: "15",
+    hint: "Finding Totals"}
 ];
 
-const totalQuestions = questionBank.length;
-let questions=[], correctAnswers=[], hints=[], types=[], currentQuestion=0;
-let userAnswers = Array(totalQuestions).fill(null);
-let status = Array(totalQuestions).fill("pending");
+// ==========================
+// Randomly pick 10 questions
+// ==========================
+function shuffle(array){ return array.sort(()=>Math.random()-0.5); }
+const quiz = shuffle([...QUESTION_LIBRARY]).slice(0,10);
+
+// ==========================
+// State
+// ==========================
+let current = 0;
 let score = 0;
+let status = Array(quiz.length).fill("pending");
 
-// Audio
-const correctSound = document.getElementById("correctSound");
-const wrongSound = document.getElementById("wrongSound");
+// ==========================
+// SFX
+// ==========================
+const correctSFX = document.getElementById("sfx-correct");
+const wrongSFX = document.getElementById("sfx-wrong");
 
-// Initialize
-questions = questionBank.map(q=>q.q);
-correctAnswers = questionBank.map(q=>q.a);
-hints = questionBank.map(q=>q.hint);
-types = questionBank.map(q=>q.type);
-
+// ==========================
 // Sidebar
-const sidebar = document.getElementById('sidebar');
-function createSidebar(){
-    const existing = sidebar.querySelectorAll('.question-number'); existing.forEach(n=>n.remove());
-    for(let i=0;i<totalQuestions;i++){
-        const div = document.createElement('div');
-        div.className = 'question-number';
-        div.textContent = i+1;
-        div.onclick = () => { if(status[i]!=='skipped') showQuestion(i); };
-        sidebar.appendChild(div);
-    }
-}
+// ==========================
+const sidebar = document.getElementById("sidebar");
+quiz.forEach((_,index)=>{
+  const box = document.createElement("div");
+  box.className="q-num";
+  box.textContent=index+1;
+  box.onclick = ()=>showQuestion(index);
+  sidebar.appendChild(box);
+});
 
-function updateSidebar(){
-    document.querySelectorAll('.question-number').forEach((item,i)=>{
-        item.className = 'question-number';
-        if(i===currentQuestion) item.classList.add('active');
-        if(status[i]==='correct') item.classList.add('correct');
-        if(status[i]==='wrong') item.classList.add('wrong');
-        if(status[i]==='skipped') item.classList.add('skipped');
-    });
-}
-
-// Show question
+// ==========================
+// Show Question
+// ==========================
 function showQuestion(index){
-    currentQuestion=index;
-    document.getElementById('question').textContent=`Q${index+1}: ${questions[index]}`;
-    document.getElementById('hint').textContent=hints[index]||'';
-
-    document.getElementById('answer').style.display = (types[index]!=='fraction') ? 'block' : 'none';
-    document.getElementById('fraction-input').style.display = (types[index]==='fraction') ? 'block' : 'none';
-
-    document.getElementById('answer').value='';
-    document.getElementById('numerator').value='';
-    document.getElementById('denominator').value='';
-
-    document.getElementById('submitBtn').style.display='inline-block';
-    document.getElementById('skipBtn').style.display='inline-block';
-    document.getElementById('nextBtn').style.display='none';
-
-    updateSidebar();
+  current=index;
+  const q = quiz[index];
+  document.getElementById("question").innerHTML = q.q;
+  document.getElementById("hint").textContent = q.hint;
+  document.getElementById("answer").style.display = q.type==="fraction"?"none":"block";
+  document.getElementById("fractionBox").style.display = q.type==="fraction"?"block":"none";
+  document.getElementById("answer").value = "";
+  document.getElementById("num").value = "";
+  document.getElementById("den").value = "";
+  document.getElementById("nextBtn").style.display="none";
+  updateSidebar();
 }
 
-// Submit answer
+// ==========================
+// Update Sidebar
+// ==========================
+function updateSidebar(){
+  document.querySelectorAll(".q-num").forEach((el,i)=>{
+    el.className="q-num";
+    if(i===current) el.classList.add("active");
+    if(status[i]==="correct") el.classList.add("correct");
+    if(status[i]==="wrong") el.classList.add("wrong");
+    if(status[i]==="skipped") el.classList.add("skipped");
+  });
+}
+
+// ==========================
+// Actions
+// ==========================
 function submitAnswer(){
-    let val='';
-    if(types[currentQuestion]==='fraction'){
-        const num = document.getElementById('numerator').value.trim();
-        const den = document.getElementById('denominator').value.trim();
-        if(!num||!den) return alert("Enter numerator and denominator!");
-        val = num+'/'+den;
-    } else val = document.getElementById('answer').value.trim();
-
-    if(!val) return alert("Enter an answer!");
-    userAnswers[currentQuestion]=val;
-
-    if(val===correctAnswers[currentQuestion]){
-        status[currentQuestion]='correct';
-        score++;
-        correctSound.play();
-        alert("✅ Correct!");
-        document.getElementById('nextBtn').style.display='inline-block';
-    } else {
-        status[currentQuestion]='wrong';
-        wrongSound.play();
-        alert("❌ Wrong! Try again!");
-    }
-    updateSidebar();
+  const q = quiz[current];
+  let answer = q.type==="fraction"?
+    document.getElementById("num").value+"/"+document.getElementById("den").value:
+    document.getElementById("answer").value.trim();
+  if(!answer) return;
+  if(answer===q.a){
+    status[current]="correct";
+    score++;
+    correctSFX.currentTime=0; correctSFX.play();
+    document.getElementById("nextBtn").style.display="block";
+  }else{
+    status[current]="wrong";
+    wrongSFX.currentTime=0; wrongSFX.play();
+  }
+  updateSidebar();
 }
 
-// Skip & next
 function skipQuestion(){
-    status[currentQuestion]='skipped';
-    userAnswers[currentQuestion]=null;
-    updateSidebar();
-    nextQuestion();
+  status[current]="skipped";
+  nextQuestion();
 }
 
 function nextQuestion(){
-    let next=-1;
-    for(let i=currentQuestion+1;i<totalQuestions;i++){if(status[i]==='pending'){next=i;break;}}
-    if(next===-1){for(let i=0;i<totalQuestions;i++){if(status[i]==='pending'){next=i;break;}}}
-    if(next!==-1) showQuestion(next); else finishQuiz();
+  const next=status.findIndex(s=>"pending"===s);
+  if(next!==-1) showQuestion(next);
+  else finishQuiz();
 }
 
-// Finish quiz
 function finishQuiz(){
-    document.getElementById('question').textContent="🎉 Quiz Finished!";
-    document.getElementById('hint').textContent='';
-    document.getElementById('answer').style.display='none';
-    document.getElementById('fraction-input').style.display='none';
-    document.querySelector('.buttons').style.display='none';
-    document.getElementById('score').textContent=`Your final score: ${score}/${totalQuestions}`;
-    updateSidebar();
-    const worm=document.getElementById('worm'); worm.style.display='block';
-    const mouth=document.getElementById('mouth');
-    if(score>=Math.ceil(totalQuestions/2)) mouth.classList.remove('sad'); else mouth.classList.add('sad');
+  document.getElementById("question").textContent="🎉 Quiz Finished!";
+  document.getElementById("hint").textContent="";
+  document.getElementById("answer").style.display="none";
+  document.getElementById("fractionBox").style.display="none";
+  document.querySelector(".buttons").style.display="none";
+  document.getElementById("score").textContent=`Score: ${score} / ${quiz.length}`;
 }
 
-// Initialize
-createSidebar();
+// ==========================
+// Start
+// ==========================
 showQuestion(0);
 </script>
+
 </body>
 </html>

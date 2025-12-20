@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Study Buds Fun Facts</title>
+
+<style>
+  body {
+    margin: 0;
+    font-family: system-ui, Arial, sans-serif;
+    background: radial-gradient(circle at top, #eef3ff, #ffffff);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
+
+  .carousel {
+    background: #fff;
+    width: 340px;
+    border-radius: 22px;
+    padding: 24px;
+    box-shadow: 0 18px 45px rgba(0,0,0,0.15);
+    text-align: center;
+  }
+
+  .counter {
+    font-size: 0.85rem;
+    color: #666;
+    margin-bottom: 6px;
+  }
+
+  img {
+    width: 90px;
+    margin: 10px auto;
+  }
+
+  h3 {
+    margin: 10px 0;
+    font-size: 1.2rem;
+  }
+
+  p {
+    font-size: 0.95rem;
+    color: #333;
+  }
+
+  .controls {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+  }
+
+  button {
+    border: none;
+    background: #4f7cff;
+    color: white;
+    font-size: 1rem;
+    padding: 8px 14px;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: transform 0.2s ease, background 0.2s ease;
+  }
+
+  button:hover {
+    background: #3a66e6;
+    transform: scale(1.05);
+  }
+</style>
+</head>
+
+<body>
+
+<div class="carousel">
+  <div class="counter" id="counter">1 / 30</div>
+  <img src="lumo.png" alt="Lumo" />
+  <h3 id="title"></h3>
+  <p id="desc"></p>
+
+  <div class="controls">
+    <button onclick="prev()">⬅</button>
+    <button onclick="next()">➡</button>
+  </div>
+</div>
+
+<script>
+  const facts = [
+    { title: "🌌 Space Is Super Loud (But You Can’t Hear It)",
+      desc: "Space is full of exploding stars and roaring energy — but sound needs air, so it’s totally silent!" },
+    { title: "🐙 Octopus Are Brainy Beasts",
+      desc: "An octopus has three hearts and nine brains — one for each arm!" },
+    { title: "⚡ Lightning Is Hotter Than The Sun",
+      desc: "A lightning bolt can reach about 30,000°C, which is hotter than the Sun’s surface!" },
+    { title: "🧠 Your Brain Is A Power Hog",
+      desc: "Your brain uses about 20% of your body’s energy — even when you’re doing nothing!" },
+    { title: "🐝 Bees Do Math",
+      desc: "Bees can count and even understand zero. Tiny insects, huge brains!" },
+    { title: "🌍 Earth Has A Heartbeat",
+      desc: "The planet vibrates slightly all the time — scientists call it Earth’s hum." },
+    { title: "🦈 Sharks Are Older Than Trees",
+      desc: "Sharks existed before trees and even before Saturn had rings!" },
+    { title: "🎨 Cats Can See Colors",
+      desc: "Cats aren’t totally colorblind — they can see shades of blue and green." },
+    { title: "🍫 Chocolate Was Money",
+      desc: "Ancient Aztecs used cacao beans as currency!" },
+    { title: "🦇 Bats Always Turn Left",
+      desc: "When leaving a cave, most bats always turn left first." },
+    { title: "🥶 Antarctica Has A Desert",
+      desc: "Despite all the ice, Antarctica is technically the largest desert in the world." },
+    { title: "🌊 Oceans Have Mountains",
+      desc: "The ocean floor has mountain ranges taller than Everest!" },
+    { title: "🪐 Saturn Could Float",
+      desc: "Saturn is so light that it would float in a gigantic bathtub (if one existed)!" },
+    { title: "🕷️ Spiders Can’t Fly",
+      desc: "But some spiders use silk threads to 'balloon' through the air for miles." },
+    { title: "🌳 Trees Talk With Fungi",
+      desc: "Trees communicate using underground fungal networks called the 'Wood Wide Web'." },
+    { title: "🦕 Dinosaurs Had Feathers",
+      desc: "Many dinosaurs were actually feathered, not scaly like in movies!" },
+    { title: "🎶 Music Changes Brainwaves",
+      desc: "Listening to music can literally shift your brainwaves and mood." },
+    { title: "🛸 Voyager 1 Is In Interstellar Space",
+      desc: "It’s the farthest human-made object from Earth!" },
+    { title: "💧 Water Can Boil And Freeze At Same Time",
+      desc: "This happens at a pressure called the 'triple point'." },
+    { title: "🐌 Snails Can Sleep For Years",
+      desc: "Some snails can hibernate for up to 3 years in extreme conditions." },
+    { title: "🌈 Rainbows Can Be Full Circles",
+      desc: "From a plane or tall building, you might see a full circular rainbow!" },
+    { title: "🪶 Feathers Are Made Of Keratin",
+      desc: "The same stuff as our hair and nails!" },
+    { title: "🌋 Earthquakes Can Make Light",
+      desc: "Some quakes produce mysterious flashes called 'earthquake lights'." },
+    { title: "🐬 Dolphins Have Names",
+      desc: "They use unique whistles to call each other, just like names!" },
+    { title: "🦖 T. Rex Had Tiny Arms But Strong Bite",
+      desc: "Tiny arms didn’t stop T. Rex from being a top predator!" },
+    { title: "🌍 Day Isn’t 24 Hours Exactly",
+      desc: "Earth’s rotation is slowly slowing, making days longer over time." },
+    { title: "🦑 Squid Have 3 Hearts",
+      desc: "Two pump blood to the gills, one to the body." },
+    { title: "💡 Thomas Edison Didn’t Invent Light Bulb Alone",
+      desc: "He improved and patented the first practical long-lasting bulb." },
+    { title: "🪁 Kites Are 2,000 Years Old",
+      desc: "Kites were invented in ancient China for measuring distance and sending signals." },
+    { title: "🛸 There Are More Stars Than Grains Of Sand",
+      desc: "The universe has more stars than every grain of sand on Earth!" }
+  ];
+
+  let index = 0;
+
+  function render() {
+    document.getElementById("title").textContent = facts[index].title;
+    document.getElementById("desc").textContent = facts[index].desc;
+    document.getElementById("counter").textContent = `${index + 1} / ${facts.length}`;
+  }
+
+  function next() {
+    index = (index + 1) % facts.length;
+    render();
+  }
+
+  function prev() {
+    index = (index - 1 + facts.length) % facts.length;
+    render();
+  }
+
+  render();
+</script>
+
+</body>
+</html>
