@@ -94,10 +94,11 @@ body {
     z-index: 10;
     left: 0;
     top: 0;
+    backdrop-filter: blur(10px);
     width: 100%; 
     height: 100%;
     overflow: auto;
-    background-color: rgba(0,0,0,0.5);
+    background-color: rgba(0, 0, 0, 0);
 }
 .modal-content {
     background-color: #fff;
@@ -171,8 +172,48 @@ body {
 
 <script>
 let quiz = [
-    {question:"苹果 (píngguǒ) 是什么？", answers:[{text:"Apple", correct:true},{text:"Banana", correct:false},{text:"Orange", correct:false},{text:"Grapes", correct:false}]},
-    {question:"谢谢 (xièxiè) 是什么意思？", answers:[{text:"Thanks", correct:true},{text:"Hello", correct:false},{text:"Bye", correct:false},{text:"Sorry", correct:false}]}
+    {
+        question: "苹果 (píngguǒ) 是什么？",
+        answers: [
+            {
+                text: "Apple",
+                correct: true
+            },
+            {
+                text: "Banana",
+                correct: false
+            },
+            {
+                text: "Orange", 
+                correct: false
+            },
+            {
+                text: "Grapes",
+                correct: false
+            }
+        ]
+    },
+    {
+    question: "从题目中选择答案，请确保答案正确。<br /> <br /> 安安喜欢看电视，所以他和妈妈买了 ___ 。 ",
+        answers: [
+            {
+                text: "玩具",
+                correct: true
+            },
+            {
+                text: "文具",
+                correct: false
+            },
+            {
+                text: "铅笔", 
+                correct: false
+            },
+            {
+                text: "葡萄",
+                correct: false
+            }
+        ]
+    },
 ];
 
 let currentQuestion = 0;
@@ -186,7 +227,7 @@ function loadQuestion() {
         return;
     }
     const q = quiz[currentQuestion];
-    document.getElementById('question').innerText = q.question;
+    document.getElementById('question').innerHTML = q.question;
     q.answers.forEach((a,i)=>{
         const btn = document.getElementById('btn'+i);
         btn.querySelector('span').innerText = a.text;
