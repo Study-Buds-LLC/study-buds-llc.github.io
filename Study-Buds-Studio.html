@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Study Buds ∞</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+:root{
+  --bg:#f2f5ff;
+  --card:#ffffff;
+  --primary:#4a63f3;
+  --text:#000;
+}
+body.dark{
+  --bg:#0f172a;
+  --card:#1e293b;
+  --primary:#38bdf8;
+  --text:#fff;
+}
+body{
+  margin:0;
+  font-family:Arial, sans-serif;
+  background:var(--bg);
+  color:var(--text);
+}
+header{
+  padding:16px;
+  background:linear-gradient(135deg,var(--primary),#6d83ff);
+  color:white;
+  text-align:center;
+  font-size:22px;
+  font-weight:700;
+}
+.container{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+  gap:16px;
+  padding:16px;
+}
+.box{
+  background:var(--card);
+  padding:14px;
+  border-radius:14px;
+  box-shadow:0 10px 25px rgba(0,0,0,.15);
+}
+h3{margin:0 0 8px}
+
+/* INPUTS */
+input,textarea,select{
+  width:100%;
+  padding:10px;
+  margin:6px 0;
+  border-radius:10px;
+  border:1px solid #ccc;
+  background:var(--card);
+  color:var(--text);
+}
+input:focus,textarea:focus{
+  border-color:var(--primary);
+  box-shadow:0 0 0 2px rgba(74,99,243,.25);
+}
+
+/* BUTTONS */
+button{
+  width:100%;
+  padding:11px;
+  margin:6px 0;
+  border:none;
+  border-radius:12px;
+  background:linear-gradient(135deg,var(--primary),#6d83ff);
+  color:white;
+  font-weight:600;
+  cursor:pointer;
+  box-shadow:0 8px 18px rgba(0,0,0,.18);
+  transition:.15s;
+}
+button:hover{transform:translateY(-2px);opacity:.95}
+button.secondary{
+  background:transparent;
+  color:var(--primary);
+  border:2px solid var(--primary);
+  box-shadow:none;
+}
+canvas{
+  border:2px dashed #aaa;
+  border-radius:12px;
+}
+.progress{
+  background:#ddd;
+  border-radius:10px;
+  overflow:hidden;
+}
+.progress div{
+  height:10px;
+  background:var(--primary);
+  width:0%;
+}
+</style>
+</head>
+
+<body>
+
+<header>🧠 Study Buds ∞ — ALL IN ONE</header>
+
+<div class="container">
+
+<!-- CLOCK -->
+<div class="box">
+<h3>🕒 Clock</h3>
+<h1 id="clock"></h1>
+</div>
+
+<!-- STOPWATCH -->
+<div class="box">
+<h3>⏱ Stopwatch</h3>
+<h2 id="sw">00:00</h2>
+<button onclick="swStart()">Start</button>
+<button class="secondary" onclick="swStop()">Stop</button>
+<button class="secondary" onclick="swReset()">Reset</button>
+</div>
+
+<!-- TIMER -->
+<div class="box">
+<h3>⏳ Timer</h3>
+<input type="number" id="timerInput" placeholder="Seconds">
+<h2 id="timer">0</h2>
+<button onclick="timerStart()">Start</button>
+</div>
+
+<!-- POMODORO -->
+<div class="box">
+<h3>🍅 Pomodoro</h3>
+<h2 id="pomo">25:00</h2>
+<button onclick="startPomo()">Start</button>
+</div>
+
+<!-- ALARM -->
+<div class="box">
+<h3>⏰ Alarm</h3>
+<input type="time" id="alarmTime">
+<button onclick="setAlarm()">Set Alarm</button>
+<p id="alarmStatus"></p>
+</div>
+
+<!-- NOTEPAD -->
+<div class="box">
+<h3>📝 Notepad</h3>
+<textarea id="pad" placeholder="Write anything..."></textarea>
+<p>Words: <span id="words">0</span></p>
+</div>
+
+<!-- NOTEBOOK -->
+<div class="box">
+<h3>📒 Notebook</h3>
+<input id="noteTitle" placeholder="Title">
+<textarea id="noteBody" placeholder="Content"></textarea>
+<button onclick="saveNote()">Save</button>
+<ul id="noteList"></ul>
+</div>
+
+<!-- TODO -->
+<div class="box">
+<h3>✅ To-Do</h3>
+<input id="todoInput" placeholder="New task">
+<button onclick="addTodo()">Add</button>
+<ul id="todos"></ul>
+</div>
+
+<!-- DRAW -->
+<div class="box">
+<h3>🎨 Drawing Pad</h3>
+<input type="color" id="color">
+<canvas id="canvas" width="260" height="180"></canvas>
+<button class="secondary" onclick="clearCanvas()">Clear</button>
+</div>
+
+<!-- AI -->
+<div class="box">
+<h3>🤖 Study Buds AI</h3>
+<select id="aiMode">
+<option>Normal</option>
+<option>Brother Explain</option>
+<option>Prime Explain</option>
+</select>
+<textarea id="aiQ" placeholder="Ask me anything..."></textarea>
+<button onclick="askAI()">Ask</button>
+<div id="aiA"></div>
+</div>
+
+<!-- PROGRESS -->
+<div class="box">
+<h3>🎮 Progress</h3>
+<p>XP: <span id="xp">0</span></p>
+<p>Level: <span id="lvl">1</span></p>
+<div class="progress"><div id="bar"></div></div>
+</div>
+
+<!-- SETTINGS -->
+<div class="box">
+<h3>⚙️ Settings</h3>
+<button onclick="toggleDark()">🌙 Dark Mode</button>
+<button class="secondary" onclick="resetAll()">♻ Reset</button>
+</div>
+
+</div>
+
+<script>
+/* CLOCK */
+setInterval(()=>clock.textContent=new Date().toLocaleTimeString(),1000);
+
+/* STOPWATCH */
+let swt=0,swi;
+function swStart(){ if(swi)return; swi=setInterval(()=>{swt++; sw.textContent=`${Math.floor(swt/60)}:${String(swt%60).padStart(2,'0')}`},1000);}
+function swStop(){ clearInterval(swi); swi=null;}
+function swReset(){ swStop(); swt=0; sw.textContent="00:00";}
+
+/* TIMER */
+function timerStart(){
+  let t=+timerInput.value;
+  timer.textContent=t;
+  let i=setInterval(()=>{
+    t--; timer.textContent=t;
+    if(t<=0)clearInterval(i);
+  },1000);
+}
+
+/* POMODORO */
+let p=1500;
+function startPomo(){
+  setInterval(()=>{
+    p--;
+    pomo.textContent=`${Math.floor(p/60)}:${String(p%60).padStart(2,'0')}`;
+  },1000);
+}
+
+/* ALARM */
+function setAlarm(){ alarmStatus.textContent="Alarm set"; }
+setInterval(()=>{
+  if(alarmTime.value===new Date().toTimeString().slice(0,5)){
+    alarmStatus.textContent="⏰ ALARM!";
+  }
+},1000);
+
+/* NOTEPAD */
+pad.value=localStorage.pad||"";
+pad.oninput=()=>{
+  localStorage.pad=pad.value;
+  words.textContent=pad.value.trim().split(/\s+/).filter(Boolean).length;
+};
+
+/* NOTEBOOK */
+let notes=JSON.parse(localStorage.notes||"[]");
+function saveNote(){
+  notes.push({t:noteTitle.value,c:noteBody.value});
+  localStorage.notes=JSON.stringify(notes);
+  renderNotes();
+}
+function renderNotes(){
+  noteList.innerHTML="";
+  notes.forEach(n=>{
+    let li=document.createElement("li");
+    li.textContent=n.t;
+    li.onclick=()=>alert(n.c);
+    noteList.appendChild(li);
+  });
+}
+renderNotes();
+
+/* TODO */
+let todoData=JSON.parse(localStorage.todos||"[]");
+function addTodo(){
+  todoData.push(todoInput.value);
+  localStorage.todos=JSON.stringify(todoData);
+  renderTodos();
+}
+function renderTodos(){
+  todos.innerHTML="";
+  todoData.forEach(t=>{
+    let li=document.createElement("li");
+    li.textContent=t;
+    todos.appendChild(li);
+  });
+}
+renderTodos();
+
+/* DRAW */
+const ctx=canvas.getContext("2d");
+let draw=false;
+canvas.onmousedown=()=>draw=true;
+canvas.onmouseup=()=>draw=false;
+canvas.onmousemove=e=>{
+  if(draw){
+    ctx.fillStyle=color.value;
+    ctx.fillRect(e.offsetX,e.offsetY,4,4);
+  }
+};
+function clearCanvas(){ctx.clearRect(0,0,canvas.width,canvas.height);}
+
+/* AI (SMART SIMULATION) */
+function askAI(){
+  const q=aiQ.value.toLowerCase();
+  let reply="Let me explain clearly.\n\n";
+  if(aiMode.value==="Brother Explain")
+    reply="🔧 Technical Explanation:\n";
+  if(aiMode.value==="Prime Explain")
+    reply="🎈 Simple Fun Explanation:\n";
+
+  if(q.includes("html")) reply+="HTML is the structure of a webpage.";
+  else if(q.includes("css")) reply+="CSS controls styling and layout.";
+  else if(q.includes("js")) reply+="JavaScript adds logic and interaction.";
+  else reply+="I understand your question and would guide you step by step.";
+
+  aiA.textContent=reply;
+}
+
+/* XP */
+let xp=0,lvl=1;
+setInterval(()=>{
+  xp++;
+  if(xp>=lvl*100){lvl++;xp=0;}
+  xp.textContent=xp;
+  lvl.textContent=lvl;
+  bar.style.width=(xp/(lvl*100))*100+"%";
+},5000);
+
+/* SETTINGS */
+function toggleDark(){document.body.classList.toggle("dark");}
+function resetAll(){localStorage.clear();location.reload();}
+</script>
+
+</body>
+</html>
