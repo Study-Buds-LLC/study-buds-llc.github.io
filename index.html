@@ -8,20 +8,73 @@
   <meta name="description" content="Let's make your learning a dream!" />
   <meta name="keywords" content="studying, reading, quizzes" />
   <meta name="author" content="Study Buds LLC" />
-
+  <meta property="og:title" content="Study Buds" />
+  <meta property="og:description" content="Learning made fun & confident in 20 mins/day!" />
+  <meta property="og:image" content="https://study-buds-llc.github.io/study-buds/lumo.png" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://study-buds-llc.github.io/study-buds/" />
+  <meta name="twitter:card" content="summary_large_image" />
   <link rel="manifest" href="manifest.json" />
+  <script>
+    // Read URL
+    const params = new URLSearchParams(window.location.search);
+    // Default = Nitro ON
+    document.body.classList.add("nitro"); // Lite mode (like nonitro)
+    if (params.get("lite") === "1") {
+      document.body.classList.remove("nitro");
+      document.body.classList.add("lite");
+      console.log("🐢 Lite mode ON");
+    } else {
+      console.log("⚡ Nitro mode ON");
+    }
+    // Secret Parent Mode
+    if (params.get("parent") === "1") {
+      alert("👨‍👩‍👧 Parent Mode Active");
+      document.body.classList.add("parent-mode");
+    }
+
+    // Debug Mode
+    if (params.get("debug") === "1") {
+      console.log("🐛 Debug Mode Active");
+      document.body.style.outline = "4px dashed red";
+    }
+  </script>
+  <script type="application/ld+json">
+      {
+        "@context":"https://schema.org",
+        "@type":"WebSite",
+        "url":"https://study-buds-llc.github.io/study-buds/",
+        "name":"Study Buds",
+        "description":"Fun learning platform for kids",
+        "potentialAction":{
+          "@type":"SearchAction",
+          "target":"https://study-buds-llc.github.io/study-buds/?s={search_term_string}",
+          "query-input":"required name=search_term_string"
+        }
+      }
+  </script>
+
+  <!-- Google Tag Manager -->
+  <script>
+  (function(w,d,s,l,i){
+    w[l]=w[l]||[];
+    w[l].push({'gtm.start': new Date().getTime(), event:'gtm.js'});
+    var f=d.getElementsByTagName(s)[0],
+        j=d.createElement(s); j.async=true;
+    j.src='https://www.googletagmanager.com/gtm.js?id='+i;
+    f.parentNode.insertBefore(j,f);
+  })(window,document,'script','dataLayer','GTM-K67ST9S4'); // <-- Replace GTM-XXXX with your ID
+  </script>
+  <!-- End Google Tag Manager -->
 
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-
   <style>
     body {
       background: #f7f8fa;
       font-family: "Inter", sans-serif;
       color: #333;
       margin: 0;
-    }
-
-    .hero {
+    }.hero {
       background: #fff;
       max-width: 800px;
       margin: 80px auto 40px;
@@ -29,87 +82,70 @@
       border-radius: 20px;
       box-shadow: 0 4px 20px rgba(0,0,0,0.07);
       text-align: center;
-    }
-
-    .hero img {
+    }.hero img {
       width: 90px;
       height: 90px;
       border-radius: 16px;
       margin-bottom: 20px;
-    }
-
-    .hero h1 {
+    }.hero h1 {
       font-size: 2.4rem;
       margin-bottom: 10px;
       font-weight: 600;
-    }
-
-    .hero p {
+    }.hero p {
       font-size: 1.1rem;
       color: #555;
       margin-bottom: 25px;
-    }
-
-    .steps {
+    }.steps {
       display: flex;
       flex-direction: column;
       gap: 30px;
       max-width: 700px;
       margin: 0 auto 50px;
-    }
-
-    .step {
+    }.step {
       display: flex;
       align-items: center;
       gap: 20px;
-    }
-
-    .step-icon {
+    }.step-icon {
       font-size: 2rem;
       width: 50px;
       text-align: center;
-    }
-
-    .step-text h3 {
+    }.step-text h3 {
       margin: 0;
       font-size: 1.3rem;
-    }
-
-    .step-text p {
+    }.step-text p {
       margin: 5px 0 0;
       color: #555;
-    }
-
-    .button-row {
+    }.button-row {
       text-align: center;
       margin-bottom: 60px;
-    }
-
-    .button-row .btn {
+    }.button-row .btn {
       margin: 5px;
       padding: 12px 25px;
       border-radius: 10px;
       font-weight: 600;
       transition: transform 0.2s;
-    }
-
-    .button-row .btn:hover {
+    }.button-row .btn:hover {
       transform: translateY(-2px);
-    }
-
-    .testimonial {
+    }.testimonial {
       background: #fff;
       border-radius: 16px;
       padding: 25px 30px;
       box-shadow: 0 3px 15px rgba(0,0,0,0.06);
       margin-bottom: 20px;
-    }
-
-    footer {
+    }footer {
       text-align: center;
       padding: 20px;
       color: #777;
       font-size: 0.9rem;
+    }/* Nitro mode */ .nitro .hero {
+      box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+      transition: all 0.3s ease;
+    }/* Lite mode */ .lite .hero {
+      box-shadow: none; 
+    }.lite {
+      background: #ffffff;
+    }/* Parent Mode */.parent-mode body {
+      outline: 3px dashed blue;
     }
   </style>
 </head>
@@ -120,50 +156,37 @@
     <img src="lumo.png" alt="Study Buds Logo" />
     <h1>Study Buds</h1>
     <p>Learning made fun & confident in just 20 minutes a day</p>
-  </div>
-
-  <div class="steps">
+  </div><div class="steps">
     <div class="step">
       <div class="step-icon">1️⃣</div>
       <div class="step-text">
         <h3>Daily Personalized Practice</h3>
         <p>Answer tailored questions that match what you're learning in school.</p>
       </div>
-    </div>
-
-    <div class="step">
+    </div><div class="step">
       <div class="step-icon">🏆</div>
       <div class="step-text">
         <h3>Earn Rewards</h3>
         <p>Get coins, badges, and level up as you improve your skills.</p>
       </div>
-    </div>
-
-    <div class="step">
+    </div><div class="step">
       <div class="step-icon">📈</div>
       <div class="step-text">
         <h3>Track Your Progress</h3>
         <p>See how you grow, where you excel, and build real confidence.</p>
       </div>
     </div>
-  </div>
-
-  <div class="button-row">
-    <a href="login.html" class="btn btn-primary">Get Started</a>
+  </div><div class="button-row">
+    <a href="login.html" class="btn btn-primary" id="get-started-btn">Get Started</a>
     <button id="view-btn" class="btn btn-outline-secondary">Why Study Buds?</button>
     <a href="chat.html" class="btn btn-outline-primary">Chat Anonymously</a>
-  </div>
-
-  <footer>
+  </div><footer>
     &copy; 2025 Study Buds LLC
-  </footer>
-
-  <script>
+  </footer><script>
     // Open popup
     document.getElementById("view-btn").addEventListener("click", () => {
       window.open("popup.html", "Why Study Buds", "width=420,height=550");
     });
-
     // Request notification permission & show sample notification
     if ("Notification" in window) {
       Notification.requestPermission().then(permission => {
@@ -172,12 +195,25 @@
         }
       });
     }
-
     // Badge dot example
     if ("setAppBadge" in navigator) {
       navigator.setAppBadge(1);
     }
+    </script>
+    <script>
+      // Make sure dataLayer exists
+      window.dataLayer = window.dataLayer || [];
+      // Select the Get Started button
+      const getStartedBtn = document.getElementById("get-started-btn");
+      if(getStartedBtn) {
+        getStartedBtn.addEventListener("click", () => {
+          // Push event to GTM
+          dataLayer.push({
+            event: 'get_started_click'
+          });
+          console.log("Get Started button clicked");
+        });
+      }
   </script>
-
 </body>
 </html>
