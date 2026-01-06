@@ -5,6 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Study Buds Math Quiz</title>
 
+<!-- Font Awesome for speaker icon -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
+
 <style>
 :root{
   --blue:#4f8df7;
@@ -67,9 +70,15 @@ body{
   font-size:14px;
   color:#6b7280;
 }
+.question-container{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
 .question{
   font-size:20px;
   margin:10px 0 20px;
+  flex:1;
 }
 
 input{
@@ -117,6 +126,12 @@ button{
 .primary{ background:var(--blue); color:#fff; }
 .secondary{ background:#e5e7eb; }
 
+#ttsBtn{
+  flex:none;
+  padding:10px;
+  border-radius:50%;
+}
+
 .score{
   margin-top:16px;
   font-weight:700;
@@ -145,7 +160,13 @@ button{
 <div class="main">
   <div class="card">
     <div id="hint" class="hint"></div>
-    <div id="question" class="question"></div>
+
+    <div class="question-container">
+      <div id="question" class="question"></div>
+      <button id="ttsBtn" class="primary" onclick="readAloud()" title="Read aloud">
+        <i class="fas fa-volume-up"></i>
+      </button>
+    </div>
 
     <input id="answer" placeholder="Your answer">
 
@@ -173,149 +194,55 @@ button{
 
 <script>
 // ==========================
-// JSON-style question library
+// Question Library
 // ==========================
 const QUESTION_LIBRARY = [
-  {
-    type: "normal",
-    q: "9 + 8 = ?",
-    a: "17",
-    hint: "Add" },
-  {
-    type: "normal",
-    q: "15 − 6 = ?",
-    a: "9",
-    hint: "Subtract" },
-  {
-    type: "normal",
-    q: "6 × 4 = ?",
-    a: "24",
-    hint: "Multiply" },
-  {
-    type: "normal",
-    q: "12 ÷ 3 = ?",
-    a: "4",
-    hint: "Divide" },
-  {
-    type: "fraction",
-    q: "1/2 + 1/4 = ?",
-    a: "3/4",
-    hint: "Add fractions" },
-  {
-    type: "fraction",
-    q: "2/3 + 1/3 = ?",
-    a: "3/3",
-    hint: "Add fractions" },
-  {
-    type: "fraction",
-    q: "3/4 + 1/4 = ?",
-    a: "4/4",
-    hint: "Whole" },
-  {
-    type: "story",
-    q: "Anna has 10 apples and eats 3. How many left?",
-    a: "7",
-    hint: "Subtract" },
-  {
-    type: "story",
-    q: "Candy costs $2 each. Buy 4. Total cost?",
-    a: "8",
-    hint: "Multiply" },
-  {
-    type: "normal",
-    q: "20 − 9 = ?",
-    a: "11",
-    hint: "Subtract" },
-  {
-    type: "normal",
-    q: "5 × 5 = ?",
-    a: "25",
-    hint: "Multiply" },
-  {
-    type: "normal",
-    q: "18 ÷ 6 = ?",
-    a: "3",
-    hint: "Divide" },
-  {
-    type: "normal",
-    q: "7 + 6 = ?",
-    a: "13",
-    hint: "Add" },
-  {
-    type: "normal",
-    q: "30 − 10 = ?",
-    a: "20",
-    hint: "Subtract" },
-  {
-    type: "normal",
-    q: "8 × 3 = ?",
-    a: "24",
-    hint: "Multiply" },
-  {
-    type: "normal",
-    q: "16 ÷ 4 = ?",
-    a: "4",
-    hint: "Divide" },
-  {
-    type: "normal",
-    q: "14 + 5 = ?",
-    a: "19",
-    hint: "Add" },
-  {
-    type: "normal",
-    q: "9 × 2 = ?",
-    a: "18",
-    hint: "Multiply" },
-  {
-    type: "normal",
-    q: "11 + 7 = ?",
-    a: "18",
-    hint: "Add" },
-  {
-    type: "normal",
-    q: "21 ÷ 7 = ?",
-    a: "3",
-    hint: "Divide" },
-  {
-    type: "story",
-    q: "Mono has 30 StudyCoins, he went to fruit store in Lumo Market to buy some apples and oranges. <br /> The Seller Told Him This: <br /> <br /> <div style='border: 2px solid black; padding: 10px; border-radius: 6px;'> 1 Apple = 10 StudyCoins <br /> 1 Orange = 5 StudyCoins </div> <br /> How much money did Mono spend if he wants 1 Apple and 1 Orange?",
-    a: "15",
-    hint: "Finding Totals" },
-  {
-    type: "fraction",
-    q: "2/3 + 2/6 = ?",
-    a: "4/6",
-    hint: "Make Denominators Same. Then Add" },
-  {
-    type: "story",
-    q: "Alex loves eating. <br /> On <b>Monday</b> he ate 5 Burgers. On <b>Thursday</b> he ate 10 Burgers. How Much Did He Eat In Total?",
-    a: "15",
-    hint: "Finding Totals" },
-  {
-    type: "fraction",
-    q: "What is 2/3 + 2/9",
-    a: "5/9",
-    hint: "Add"
-  },
-  {
-    type: "normal",
-    q: "Round 145 to the nearest hundred",
-    a: "100",
-    hint: "Lower than 50 = Round Down"
-  },
-  {
-    type: "normal",
-    q: "What's 56 rounded to the nearest 10?",
-    a: "60",
-    hint: "Higher than 50 round up"
-  }
+  { type: "normal", q: "9 + 8 = ?", a: "17", hint: "Add" },
+  { type: "normal", q: "15 − 6 = ?", a: "9", hint: "Subtract" },
+  { type: "normal", q: "6 × 4 = ?", a: "24", hint: "Multiply" },
+  { type: "normal", q: "12 ÷ 3 = ?", a: "4", hint: "Divide" },
+  { type: "fraction", q: "1/2 + 1/4 = ?", a: "3/4", hint: "Add fractions" },
+  { type: "fraction", q: "2/3 + 1/3 = ?", a: "3/3", hint: "Add fractions" },
+  { type: "fraction", q: "3/4 + 1/4 = ?", a: "4/4", hint: "Whole" },
+  { type: "story", q: "Anna has 10 apples and eats 3. How many left?", a: "7", hint: "Subtract" },
+  { type: "story", q: "Candy costs $2 each. Buy 4. Total cost?", a: "8", hint: "Multiply" },
+  { type: "normal", q: "20 − 9 = ?", a: "11", hint: "Subtract" },
+  { type: "normal", q: "5 × 5 = ?", a: "25", hint: "Multiply" },
+  { type: "normal", q: "18 ÷ 6 = ?", a: "3", hint: "Divide" },
+  { type: "normal", q: "7 + 6 = ?", a: "13", hint: "Add" },
+  { type: "normal", q: "30 − 10 = ?", a: "20", hint: "Subtract" },
+  { type: "normal", q: "8 × 3 = ?", a: "24", hint: "Multiply" },
+  { type: "normal", q: "16 ÷ 4 = ?", a: "4", hint: "Divide" },
+  { type: "normal", q: "14 + 5 = ?", a: "19", hint: "Add" },
+  { type: "normal", q: "9 × 2 = ?", a: "18", hint: "Multiply" },
+  { type: "normal", q: "11 + 7 = ?", a: "18", hint: "Add" },
+  { type: "normal", q: "21 ÷ 7 = ?", a: "3", hint: "Divide" },
+  { type: "story", q: "Mono has 30 StudyCoins, he went to fruit store in Lumo Market to buy some apples and oranges. <br /> The Seller Told Him This: <br /> <br /> <div style='border: 2px solid black; padding: 10px; border-radius: 6px;'> 1 Apple = 10 StudyCoins <br /> 1 Orange = 5 StudyCoins </div> <br /> How much money did Mono spend if he wants 1 Apple and 1 Orange?", a: "15", hint: "Finding Totals" },
+  { type: "fraction", q: "2/3 + 2/6 = ?", a: "4/6", hint: "Make Denominators Same. Then Add" },
+  { type: "story", q: "Alex loves eating. <br /> On <b>Monday</b> he ate 5 Burgers. On <b>Thursday</b> he ate 10 Burgers. How Much Did He Eat In Total?", a: "15", hint: "Finding Totals" },
+  { type: "fraction", q: "What is 2/3 + 2/9", a: "5/9", hint: "Add" },
+  { type: "normal", q: "Round 145 to the nearest hundred", a: "100", hint: "Lower than 50 = Round Down" },
+  { type: "normal", q: "What's 56 rounded to the nearest 10?", a: "60", hint: "Higher than 50 round up" },
+
+  // --- NEW QUESTIONS ---
+  { type: "normal", q: "25 + 17 = ?", a: "42", hint: "Add" },
+  { type: "normal", q: "40 − 18 = ?", a: "22", hint: "Subtract" },
+  { type: "normal", q: "7 × 6 = ?", a: "42", hint: "Multiply" },
+  { type: "normal", q: "81 ÷ 9 = ?", a: "9", hint: "Divide" },
+  { type: "fraction", q: "1/3 + 1/6 = ?", a: "1/2", hint: "Make Denominators Same. Then Add" },
+  { type: "fraction", q: "5/8 − 1/4 = ?", a: "3/8", hint: "Subtract Fractions" },
+  { type: "story", q: "Lily had 12 candies. She gave 4 to her friend. How many does she have now?", a: "8", hint: "Subtract" },
+  { type: "story", q: "Tom bought 3 packs of pencils. Each pack has 6 pencils. How many pencils in total?", a: "18", hint: "Multiply" },
+  { type: "normal", q: "Round 367 to the nearest ten", a: "370", hint: "Round to nearest ten" },
+  { type: "normal", q: "Round 822 to the nearest hundred", a: "800", hint: "Round to nearest hundred" }
 ];
 
+
 // ==========================
-// Randomly pick 10 questions
+// Shuffle & Pick 10
 // ==========================
 function shuffle(array){ return array.sort(()=>Math.random()-0.5); }
-const quiz = shuffle([...QUESTION_LIBRARY]).slice(0,10);
+const quiz = shuffle([...QUESTION_LIBRARY]).slice(0,15);
 
 // ==========================
 // State
@@ -343,6 +270,45 @@ quiz.forEach((_,index)=>{
 });
 
 // ==========================
+// TTS function
+// ==========================
+function readAloud(){
+  const q = quiz[current];
+  if ('speechSynthesis' in window) {
+    const utter = new SpeechSynthesisUtterance();
+
+    // Format fractions and symbols for clarity
+    const formattedText = q.q
+      .replace(/\//g, ' over ')
+      .replace(/÷/g, ' divided by ')
+      .replace(/×/g, ' times ')
+      .replace(/−/g, ' minus ')
+      .replace(/\+/g, ' plus ')
+      .replace(/=/g, ' equals ');
+
+    utter.text = formattedText;
+    utter.rate = 0.9;
+    utter.pitch = 1.0; // male voice slightly lower
+
+    // Wait for voices to load
+    const voices = window.speechSynthesis.getVoices();
+    const googleUKMale = voices.find(v => v.name.includes("Google UK English Male"));
+    if (googleUKMale) utter.voice = googleUKMale;
+
+    window.speechSynthesis.cancel();
+    window.speechSynthesis.speak(utter);
+  }
+}
+
+// Some browsers load voices asynchronously
+if (typeof speechSynthesis !== 'undefined' && speechSynthesis.onvoiceschanged !== undefined) {
+  speechSynthesis.onvoiceschanged = () => {};
+}
+
+
+
+
+// ==========================
 // Show Question
 // ==========================
 function showQuestion(index){
@@ -357,6 +323,7 @@ function showQuestion(index){
   document.getElementById("den").value = "";
   document.getElementById("nextBtn").style.display="none";
   updateSidebar();
+  readAloud(); // read question automatically
 }
 
 // ==========================
@@ -411,6 +378,7 @@ function finishQuiz(){
   document.getElementById("fractionBox").style.display="none";
   document.querySelector(".buttons").style.display="none";
   document.getElementById("score").textContent=`Score: ${score} / ${quiz.length}`;
+  readAloud(); // speak the final message
 }
 
 // ==========================
