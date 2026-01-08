@@ -193,6 +193,56 @@ iframe {
 #spinner {
   display: block;
 }
+#betaDia {
+  border: none;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+}
+#betaDia button {
+  margin-top: 15px;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 8px;
+  background-color: #ff4c4c;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+}
+.errorMsg {
+  border: none;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+  text-align: center;
+  width: 400px;
+}
+.errorMsg img {
+  width: 200px;
+  margin-bottom: 0px;
+}
+.errorMsg button {
+  margin-top: 15px;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 8px;
+  background-color: #ff4c4c;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+}
+.errorMsg h1 {
+  font-size: 1.5rem;
+  color: #333;
+}
+.dev-note {
+  font-size: 0.8rem;
+  color: #555;
+  margin-top: 10px;
+  border: 2px solid #eee;
+  border-radius: 6px;
+  padding: 10px;
+}
 </style>
 </head>
 <body class="loading">
@@ -253,8 +303,22 @@ iframe {
 
 <div class="con">
     <div class="back-to-school">
-      <h2>Study Buds Back to School! 🎒 <span class="beta-tag">BETA</span></h2>
+      <h2>Study Buds Back to School! 🎒 <span class="beta-tag" onclick="betaDia.showModal()">BETA</span></h2>
     </div>
+    <dialog id="betaDia">
+      <p>This is a BETA feature</p>
+      <button onclick="betaDia.close()">&times; Close</button>
+    </dialog>
+    <dialog class="errorMsg" open="true">
+      <img src="error_pic.png" alt="Water dripping on the head of Lumo">
+      <h1>Oops! An Error Occurred!</h1>
+      <p>Water's Dripping All Over Lumo's Head!</p>
+      <p class="dev-note">Developer Note:
+        <br>If this error persists, you may check the github <a href="https://github.com/Study-Buds-LLC">https://github.com/Study-Buds-LLC</a> and contact the developers.
+        <br>Or go to the <a href="https://github.com/Study-Buds-LLC/study-buds-llc.github.io">https://github.com/Study-Buds-LLC/study-buds-llc.github.io</a> and select the branch "Study-Buds-for-Education" and you make edit the code in that branch. The Host will merge the pull request to "main" branch if change is accepted.
+      </p>
+      <button onclick="this.parentElement.close()">&times; Close</button>
+    </dialog>
 
     <iframe src="schedule.html" width="640" height="480" title="Study Buds Schedule"></iframe>
 
