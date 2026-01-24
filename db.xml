@@ -1,0 +1,25 @@
+<db.set>
+    <db.name value="Study Buds DB"/>
+    <db.desc value="A simple database of study buds using SBDB!" />
+    <db.items>
+        <item template="simple-item">
+            <item.name value="Login and Signup Database"/>
+            <item.saveOn value="onLogin().activate and onSignup().activate" />
+            <db.items.end />
+        </item>
+        <item template="readonly">
+            <item.name value="Tools" />
+            <item.saveOn value="null"/>
+            <item.value>
+                <item.dVdsg38>
+                    <item.dVdsg38.name>Daily Quiz</item.dVdsg38.name>
+                    <daily-quiz>
+                        <questions checkIn="js"></questions>
+                    </daily-quiz>
+                </item.dVdsg38>
+            </item.value>
+        </item>
+    </db.items>
+    <!-- Turn On the Database -->
+    <db.on />
+</db.set>
