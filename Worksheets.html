@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Study Buds - Worksheets</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+:root{
+  --primary:#2563eb;
+  --bg:#f3f6fc;
+  --card:#fff;
+  --good:#dcfce7;
+  --bad:#fee2e2;
+  --muted:#6b7280;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui;background:var(--bg)}
+header{background:var(--primary);color:white;padding:16px}
+header h1{margin:0}
+main{padding:20px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
+.card{
+  background:var(--card);
+  border-radius:18px;
+  padding:18px;
+  box-shadow:0 10px 26px rgba(0,0,0,.06)
+}
+.card h3{margin:0}
+.card p{color:var(--muted)}
+.card button{
+  width:100%;margin-top:12px;padding:10px;
+  border:none;border-radius:10px;
+  background:var(--primary);color:white;cursor:pointer
+}
+.badge{display:inline-block;padding:6px 10px;border-radius:999px;background:#e0e7ff;margin:4px;font-size:12px}
+
+.modal{
+  position:fixed;inset:0;background:rgba(0,0,0,.5);
+  display:none;justify-content:center;align-items:center
+}
+.modal-box{
+  background:white;width:95%;max-width:900px;
+  max-height:90vh;overflow:auto;border-radius:20px;padding:20px
+}
+.question{padding:12px;border-radius:10px;margin-bottom:12px}
+.correct{background:var(--good)}
+.wrong{background:var(--bad)}
+.actions{display:flex;gap:10px}
+.actions button{flex:1;padding:12px;border:none;border-radius:12px;font-weight:600;cursor:pointer}
+.submit{background:#16a34a;color:white}
+.close{background:#ef4444;color:white}
+footer{text-align:center;color:#6b7280;padding:12px}
+</style>
+</head>
+
+<body>
+
+<header>
+  <h1>📘 Study Buds — Worksheets<h1>
+</header>
+
+<main>
+  <div class="grid" id="modeSelect">
+    <div class="card">
+      <h3>👨‍🏫 Teacher</h3>
+      <p>Create classes & track students</p>
+      <button onclick="teacherLogin()">Enter</button>
+    </div>
+    <div class="card">
+      <h3>👨‍🎓 Student</h3>
+      <p>Join class & do worksheets</p>
+      <button onclick="studentLogin()">Enter</button>
+    </div>
+  </div>
+
+  <div id="app" style="display:none">
+    <div class="grid" id="dashboard"></div>
+    <h2 id="title"></h2>
+    <div class="grid" id="content"></div>
+  </div>
+</main>
+
+<div class="modal" id="modal">
+  <div class="modal-box">
+    <h3 id="wsTitle"></h3>
+    <div id="questions"></div>
+    <div class="actions">
+      <button class="submit" onclick="submit()">Submit</button>
+      <button class="close" onclick="closeModal()">Close</button>
+    </div>
+    <p id="score"></p>
+  </div>
+</div>
+
+<footer>Study Buds - Worksheets</footer>
+
+<script>
+/* ================== GLOBAL ================== */
+let mode=null, user=null, classCode=null;
+let profile={completed:0,streak:0,badges:[]};
+
+/* ================== LOGIN ================== */
+function teacherLogin(){
+  user=prompt("Teacher name:");
+  if(!user) return;
+  mode="teacher";
+  classCode="SB-"+Math.random().toString(36).slice(2,6).toUpperCase();
+  localStorage.setItem("SB_CLASS_"+classCode,JSON.stringify({teacher:user,students:{}}));
+  startApp();
+}
+
+function studentLogin(){
+  user=prompt("Student name:");
+  classCode=prompt("Class code:");
+  if(!user||!classCode) return;
+  const cls=localStorage.getItem("SB_CLASS_"+classCode);
+  if(!cls){alert("Invalid class code");return}
+  mode="student";
+  const c=JSON.parse(cls);
+  c.students[user]={completed:0};
+  localStorage.setItem("SB_CLASS_"+classCode,JSON.stringify(c));
+  startApp();
+}
+
+/* ================== APP ================== */
+function startApp(){
+  modeSelect.style.display="none";
+  app.style.display="block";
+  updateDashboard();
+  showSubjects();
+}
+
+function updateDashboard(){
+  dashboard.innerHTML="";
+  const c=document.createElement("div");
+  c.className="card";
+
+  if(mode==="teacher"){
+    const cls=JSON.parse(localStorage.getItem("SB_CLASS_"+classCode));
+    c.innerHTML=`
+      <h3>👨‍🏫 ${user}</h3>
+      <p>Class Code: <b>${classCode}</b></p>
+      <p>Students: ${Object.keys(cls.students).length}</p>
+      <pre>${JSON.stringify(cls.students,null,2)}</pre>
+    `;
+  } else {
+    c.innerHTML=`
+      <h3>👨‍🎓 ${user}</h3>
+      <p>Class: ${classCode}</p>
+      <p>Completed: ${profile.completed}</p>
+      <div>${profile.badges.map(b=>`<span class="badge">${b}</span>`).join("")}</div>
+    `;
+  }
+  dashboard.appendChild(c);
+}
+
+/* ================== SUBJECTS ================== */
+const subjects=["Math","Science","English","Chinese","Coding"];
+function showSubjects(){
+  title.textContent="Choose Subject";
+  content.innerHTML="";
+  subjects.forEach(s=>{
+    const c=document.createElement("div");
+    c.className="card";
+    c.innerHTML=`<h3>${s}</h3><button>Open</button>`;
+    c.querySelector("button").onclick=()=>openWorksheet(s);
+    content.appendChild(c);
+  });
+}
+
+/* ================== WORKSHEET ================== */
+let answers={};
+function openWorksheet(subject){
+  modal.style.display="flex";
+  wsTitle.textContent=subject+" Worksheet";
+  questions.innerHTML="";
+  answers={};
+
+  for(let i=1;i<=20;i++){
+    const q=document.createElement("div");
+    q.className="question";
+    q.innerHTML=`
+      <p>${i}. Choose A</p>
+      <label><input type="radio" name="q${i}" value="A"> A</label>
+      <label><input type="radio" name="q${i}" value="B"> B</label>
+    `;
+    questions.appendChild(q);
+    answers[i]="A";
+  }
+}
+
+/* ================== SUBMIT ================== */
+function submit(){
+  let s=0;
+  document.querySelectorAll(".question").forEach((q,i)=>{
+    const v=q.querySelector("input:checked")?.value;
+    if(v===answers[i+1]){q.classList.add("correct");s++}
+    else q.classList.add("wrong");
+  });
+  score.textContent=`Score: ${s}/20`;
+
+  if(mode==="student"){
+    profile.completed++;
+    if(profile.completed===1) profile.badges.push("🏅 First Worksheet");
+    const cls=JSON.parse(localStorage.getItem("SB_CLASS_"+classCode));
+    cls.students[user].completed=profile.completed;
+    localStorage.setItem("SB_CLASS_"+classCode,JSON.stringify(cls));
+    updateDashboard();
+  }
+}
+
+/* ================== CLOSE ================== */
+function closeModal(){
+  if(confirm("Close worksheet?")){
+    modal.style.display="none";
+  }
+}
+</script>
+
+</body>
+</html>
