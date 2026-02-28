@@ -5,102 +5,11 @@
 <title>Study Buds ∞</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<style>
-:root{
-  --bg:#f2f5ff;
-  --card:#ffffff;
-  --primary:#4a63f3;
-  --text:#000;
-}
-body.dark{
-  --bg:#0f172a;
-  --card:#1e293b;
-  --primary:#38bdf8;
-  --text:#fff;
-}
-body{
-  margin:0;
-  font-family:Arial, sans-serif;
-  background:var(--bg);
-  color:var(--text);
-  font-size: 16px;
-}
-header{
-  padding:16px;
-  background:linear-gradient(135deg,var(--primary),#6d83ff);
-  color:white;
-  text-align:center;
-  font-size:22px;
-  font-weight:700;
-}
-.container{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
-  gap:16px;
-  padding:16px;
-}
-.box{
-  background:var(--card);
-  padding:14px;
-  border-radius:14px;
-  box-shadow:0 10px 25px rgba(0,0,0,.15);
-}
-h3{margin:0 0 8px}
 
-/* INPUTS */
-input,textarea,select{
-  width:100%;
-  padding:10px;
-  margin:6px 0;
-  border-radius:10px;
-  border:1px solid #ccc;
-  background:var(--card);
-  color:var(--text);
-}
-input:focus,textarea:focus{
-  border-color:var(--primary);
-  box-shadow:0 0 0 2px rgba(74,99,243,.25);
-}
-
-/* BUTTONS */
-button{
-  width:100%;
-  padding:11px;
-  margin:6px 0;
-  border:none;
-  border-radius:12px;
-  background:linear-gradient(135deg,var(--primary),#6d83ff);
-  color:white;
-  font-weight:600;
-  cursor:pointer;
-  box-shadow:0 8px 18px rgba(0,0,0,.18);
-  transition:.15s;
-}
-button:hover{transform:translateY(-2px);opacity:.95}
-button.secondary{
-  background:transparent;
-  color:var(--primary);
-  border:2px solid var(--primary);
-  box-shadow:none;
-}
-canvas{
-  border:2px dashed #aaa;
-  border-radius:12px;
-}
-.progress{
-  background:#ddd;
-  border-radius:10px;
-  overflow:hidden;
-}
-.progress div{
-  height:10px;
-  background:var(--primary);
-  width:0%;
-}
-</style>
+  <link rel="stylesheet" href="styles/minimal.css" />
 </head>
 
-<body>
+<body><div class="lite-mode-banner">This is Lite Mode. View real one at <a href="https://study-buds-llc.github.io">study-buds-llc.github.io</a></div>
 
 <header>🧠 Study Buds ∞ — ALL IN ONE</header>
 

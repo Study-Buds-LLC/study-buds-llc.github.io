@@ -5,56 +5,11 @@
 <title>Study Buds - Worksheets</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<style>
-:root{
-  --primary:#2563eb;
-  --bg:#f3f6fc;
-  --card:#fff;
-  --good:#dcfce7;
-  --bad:#fee2e2;
-  --muted:#6b7280;
-}
-*{box-sizing:border-box}
-body{margin:0;font-family:system-ui;background:var(--bg)}
-header{background:var(--primary);color:white;padding:16px}
-header h1{margin:0}
-main{padding:20px}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
-.card{
-  background:var(--card);
-  border-radius:18px;
-  padding:18px;
-  box-shadow:0 10px 26px rgba(0,0,0,.06)
-}
-.card h3{margin:0}
-.card p{color:var(--muted)}
-.card button{
-  width:100%;margin-top:12px;padding:10px;
-  border:none;border-radius:10px;
-  background:var(--primary);color:white;cursor:pointer
-}
-.badge{display:inline-block;padding:6px 10px;border-radius:999px;background:#e0e7ff;margin:4px;font-size:12px}
 
-.modal{
-  position:fixed;inset:0;background:rgba(0,0,0,.5);
-  display:none;justify-content:center;align-items:center
-}
-.modal-box{
-  background:white;width:95%;max-width:900px;
-  max-height:90vh;overflow:auto;border-radius:20px;padding:20px
-}
-.question{padding:12px;border-radius:10px;margin-bottom:12px}
-.correct{background:var(--good)}
-.wrong{background:var(--bad)}
-.actions{display:flex;gap:10px}
-.actions button{flex:1;padding:12px;border:none;border-radius:12px;font-weight:600;cursor:pointer}
-.submit{background:#16a34a;color:white}
-.close{background:#ef4444;color:white}
-footer{text-align:center;color:#6b7280;padding:12px}
-</style>
+  <link rel="stylesheet" href="styles/minimal.css" />
 </head>
 
-<body>
+<body><div class="lite-mode-banner">This is Lite Mode. View real one at <a href="https://study-buds-llc.github.io">study-buds-llc.github.io</a></div>
 
 <header>
   <h1>📘 Study Buds — Worksheets<h1>
@@ -74,7 +29,7 @@ footer{text-align:center;color:#6b7280;padding:12px}
     </div>
   </div>
 
-  <div id="app" style="display:none">
+  <div id="app">
     <div class="grid" id="dashboard"></div>
     <h2 id="title"></h2>
     <div class="grid" id="content"></div>

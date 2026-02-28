@@ -6,152 +6,10 @@
 <title>Study Buds Math Quiz</title>
 
 <!-- Font Awesome for speaker icon -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
-
-<style>
-:root{
-  --blue:#4f8df7;
-  --soft:#eef4ff;
-  --green:#22c55e;
-  --red:#ef4444;
-  --gray:#9ca3af;
-}
-
-body{
-  margin:0;
-  font-family:system-ui, Arial, sans-serif;
-  background:#f4f7fb;
-  display:flex;
-  min-height:100vh;
-}
-
-/* Sidebar */
-.sidebar{
-  width:190px;
-  background:#fff;
-  border-right:1px solid #e5e7eb;
-  padding:16px;
-}
-.sidebar h2{
-  text-align:center;
-  margin:8px 0 16px;
-}
-.q-num{
-  padding:10px;
-  margin-bottom:8px;
-  border-radius:8px;
-  background:var(--soft);
-  text-align:center;
-  cursor:pointer;
-  font-weight:600;
-}
-.q-num.active{ background:var(--blue); color:#fff; }
-.q-num.correct{ background:var(--green); color:#fff; }
-.q-num.wrong{ background:var(--red); color:#fff; }
-.q-num.skipped{ background:var(--gray); color:#fff; opacity:.6; }
-
-/* Main */
-.main{
-  flex:1;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-}
-.card{
-  background:#fff;
-  width:100%;
-  max-width:520px;
-  padding:28px;
-  border-radius:16px;
-  box-shadow:0 10px 30px rgba(0,0,0,.08);
-}
-
-.hint{
-  font-size:14px;
-  color:#6b7280;
-}
-.question-container{
-  display:flex;
-  align-items:center;
-  gap:10px;
-}
-.question{
-  font-size:20px;
-  margin:10px 0 20px;
-  flex:1;
-}
-
-input{
-  width:100%;
-  padding:12px;
-  font-size:18px;
-  border-radius:10px;
-  border:2px solid #e5e7eb;
-}
-input:focus{
-  outline:none;
-  border-color:var(--blue);
-}
-
-/* Fraction input */
-.fraction{
-  display:none;
-  text-align:center;
-}
-.fraction input{
-  width:120px;
-  margin:6px auto;
-}
-.fraction-line{
-  width:130px;
-  height:2px;
-  background:#111;
-  margin:4px auto;
-}
-
-/* Buttons */
-.buttons{
-  display:flex;
-  gap:10px;
-  margin-top:18px;
-}
-button{
-  flex:1;
-  padding:12px;
-  font-size:16px;
-  border:none;
-  border-radius:10px;
-  cursor:pointer;
-}
-.primary{ background:var(--blue); color:#fff; }
-.secondary{ background:#e5e7eb; }
-
-#ttsBtn{
-  flex:none;
-  padding:10px;
-  border-radius:50%;
-}
-
-.score{
-  margin-top:16px;
-  font-weight:700;
-}
-
-/* Mobile */
-@media(max-width:700px){
-  body{ flex-direction:column; }
-  .sidebar{
-    width:100%;
-    display:flex;
-    overflow-x:auto;
-    gap:8px;
-  }
-  .q-num{ min-width:42px; }
-}
-</style>
+  <link rel="stylesheet" href="styles/minimal.css" />
 </head>
 
-<body>
+<body><div class="lite-mode-banner">This is Lite Mode. View real one at <a href="https://study-buds-llc.github.io">study-buds-llc.github.io</a></div>
 
 <div class="sidebar" id="sidebar">
   <h2>Math Quiz</h2>
@@ -179,7 +37,7 @@ button{
     <div class="buttons">
       <button class="primary" onclick="submitAnswer()">Submit</button>
       <button class="secondary" onclick="skipQuestion()">Skip</button>
-      <button class="primary" id="nextBtn" onclick="nextQuestion()" style="display:none">
+      <button class="primary" id="nextBtn" onclick="nextQuestion()">
         Next
       </button>
     </div>
@@ -217,7 +75,7 @@ const QUESTION_LIBRARY = [
   { type: "normal", q: "9 × 2 = ?", a: "18", hint: "Multiply" },
   { type: "normal", q: "11 + 7 = ?", a: "18", hint: "Add" },
   { type: "normal", q: "21 ÷ 7 = ?", a: "3", hint: "Divide" },
-  { type: "story", q: "Mono has 30 StudyCoins, he went to fruit store in Lumo Market to buy some apples and oranges. <br /> The Seller Told Him This: <br /> <br /> <div style='border: 2px solid black; padding: 10px; border-radius: 6px;'> 1 Apple = 10 StudyCoins <br /> 1 Orange = 5 StudyCoins </div> <br /> How much money did Mono spend if he wants 1 Apple and 1 Orange?", a: "15", hint: "Finding Totals" },
+  { type: "story", q: "Mono has 30 StudyCoins, he went to fruit store in Lumo Market to buy some apples and oranges. <br /> The Seller Told Him This: <br /> <br /> <div> 1 Apple = 10 StudyCoins <br /> 1 Orange = 5 StudyCoins </div> <br /> How much money did Mono spend if he wants 1 Apple and 1 Orange?", a: "15", hint: "Finding Totals" },
   { type: "fraction", q: "2/3 + 2/6 = ?", a: "4/6", hint: "Make Denominators Same. Then Add" },
   { type: "story", q: "Alex loves eating. <br /> On <b>Monday</b> he ate 5 Burgers. On <b>Thursday</b> he ate 10 Burgers. How Much Did He Eat In Total?", a: "15", hint: "Finding Totals" },
   { type: "fraction", q: "What is 2/3 + 2/9", a: "5/9", hint: "Add" },

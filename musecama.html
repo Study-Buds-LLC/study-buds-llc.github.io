@@ -5,99 +5,10 @@
 <title>Infinity Music Player 🌌</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<style>
-:root {
-    --glass: rgba(255,255,255,0.15);
-}
 
-body {
-    margin: 0;
-    height: 100vh;
-    font-family: "Segoe UI", sans-serif;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: url("https://images.unsplash.com/photo-1501785888041-af3ef285b470");
-    background-size: cover;
-    background-position: center;
-    transition: background 1s ease;
-    color: white;
-}
-
-.player {
-    background: var(--glass);
-    backdrop-filter: blur(12px);
-    padding: 30px;
-    border-radius: 25px;
-    width: 340px;
-    text-align: center;
-    box-shadow: 0 25px 60px rgba(0,0,0,0.45);
-}
-
-h1 {
-    margin-bottom: 20px;
-    font-size: 22px;
-    letter-spacing: 1px;
-}
-
-button {
-    width: 100%;
-    padding: 14px;
-    margin: 10px 0;
-    border: none;
-    border-radius: 30px;
-    font-size: 17px;
-    cursor: pointer;
-    transition: transform 0.2s, box-shadow 0.2s;
-}
-
-button:active {
-    transform: scale(0.95);
-}
-
-.calm {
-    background: linear-gradient(135deg, #7ee8fa, #80ff72);
-    color: #003333;
-}
-
-.exciting {
-    background: linear-gradient(135deg, #ff416c, #ff4b2b);
-    color: white;
-}
-
-.controls {
-    margin-top: 15px;
-}
-
-.playPause {
-    font-size: 22px;
-    background: none;
-    color: white;
-    border: 2px solid white;
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    transition: transform 0.3s;
-}
-
-.playing {
-    transform: rotate(360deg);
-}
-
-input[type="range"] {
-    width: 100%;
-    margin-top: 15px;
-}
-
-video {
-    width: 100%;
-    margin-top: 20px;
-    border-radius: 15px;
-    display: none;
-}
-</style>
+  <link rel="stylesheet" href="styles/minimal.css" />
 </head>
-<body>
+<body><div class="lite-mode-banner">This is Lite Mode. View real one at <a href="https://study-buds-llc.github.io">study-buds-llc.github.io</a></div>
 
 <div class="player">
     <h1>🌌 Infinite Vibe Player</h1>
