@@ -5,36 +5,36 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Login or Register - Study Buds</title>
 
-  <link rel="stylesheet" href="styles/minimal.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles/kid-friendly.css" />
 </head>
 
-<body><div class="lite-mode-banner">This is Lite Mode. View real one at <a href="https://study-buds-llc.github.io">study-buds-llc.github.io</a></div>
+<body>
 
 <div id="form-container">
     <img src="lumo.png" alt="Study Buds Logo">
     <h2>Welcome to Study Buds</h2>
 
     <form action="tools.html">
-        <label>Display Name <span>*</span></label>
-        <input type="text" placeholder="Lumo" class="name" required>
+        <label for="display">Display Name <span>*</span></label>
+        <input id="display" name="display" type="text" placeholder="Lumo" required>
 
-        <label>Username <span>*</span></label>
-        <input type="text" placeholder="lumo-3456" class="user" required>
+        <label for="username">Username <span>*</span></label>
+        <input id="username" name="username" type="text" placeholder="lumo-3456" required>
         <p id="status"></p>
 
-        <label>Email <span>*</span></label>
-        <input type="email" placeholder="lumo-3456@gmail.com" class="email" required>
+        <label for="email">Email <span>*</span></label>
+        <input id="email" name="email" type="email" placeholder="lumo-3456@gmail.com" required>
 
-        <div class="form-check mb-3">
+        <div class="form-check">
             <input class="form-check-input" type="checkbox" required id="checkDefault">
             <label class="form-check-label" for="checkDefault">
                 I agree to the <a href="tof.html">Terms of Service</a>
             </label>
         </div>
 
-        <a href="tools.html">
-            <button type="submit" id="submit">Get Started</button>
-        </a>
+        <button type="submit" id="submit">Get Started</button>
+        <p class="muted">We never share your information. Safe for kids.</p>
     </form>
 </div>
 
