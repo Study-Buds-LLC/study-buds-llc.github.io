@@ -20,7 +20,12 @@ h1,h2,h3,h4,h5,h6 {
     color: var(--primary);
 }
 section p, ul {
-    color: var(--bg-1)
+    color: var(--text)
+}
+
+form a {
+  text-decoration: none;
+  color: var(--primary);
 }
 
 /* Friendly base */
@@ -129,6 +134,63 @@ iframe{ border-radius:12px; box-shadow:0 20px 60px rgba(20,80,45,0.06); border:0
 @media (max-width:720px){
   header{ font-size:1.1rem; }
   .featured img{ max-width:92%; }
-  .optional-container{ grid-template-columns:1fr 1fr; }
+  .optional-container{ grid-template-columns:1fr; }
+}
+
+@media (max-width:600px){
+  .steps{ flex-direction:column; align-items:center; }
+  .hero h1{ font-size:1.6rem; }
+  .hero img{ width:80px; }
+  .optional-container{ grid-template-columns:1fr; max-width:360px; }
+  #form-container{ margin:24px 8px; padding:16px; }
+  nav{ gap:6px; }
+  .nav-link-btn{ font-size:0.9rem; padding:8px 10px; }
+}
+
+/* Force light "foolscap" / ruled paper appearance for kid-friendly theme */
+main,
+section,
+article,
+form,
+.card,
+.panel,
+.box,
+.hero,
+.quiz-container,
+.popup,
+.popup-box,
+dialog,
+#form-container,
+.testimonial {
+  background-color: #fffef7 !important;
+  background-image:
+    linear-gradient(90deg, transparent 0 52px, rgba(239,68,68,0.30) 52px 54px, transparent 54px) !important,
+    repeating-linear-gradient(180deg, transparent 0 26px, rgba(59,130,246,0.15) 26px 27px) !important;
+  border-color: rgba(2,6,23,0.10) !important;
+  padding-left: var(--paper-gutter, 62px) !important;
+}
+
+/* Ensure the punched-hole accent uses a light color */
+main::after,
+section::after,
+article::after,
+form::after,
+.card::after,
+.panel::after,
+.box::after,
+.hero::after,
+.quiz-container::after,
+.popup::after,
+.popup-box::after,
+dialog::after,
+#form-container::after,
+.testimonial::after {
+  background: repeating-radial-gradient(
+    circle at 9px 14px,
+    transparent 0 4px,
+    rgba(2,6,23,0.12) 4px 5px,
+    transparent 5px 26px
+  ) !important;
+  opacity: 0.35 !important;
 }
 

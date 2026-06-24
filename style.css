@@ -3,7 +3,14 @@ body {
   background: linear-gradient(135deg, #e0f7fa, #ffffff);
   color: #333;
   text-align: center;
-  padding: 40px;
+  padding: 16px;
+  min-height: 100vh;
+}
+
+@media (min-width: 768px) {
+  body {
+    padding: 40px;
+  }
 }
 
 h1 {
@@ -76,4 +83,26 @@ button:hover {
 #time {
   font-size: 13px;
   color: #555;
+}
+
+@media (max-width: 600px) {
+  h1 {
+    font-size: 1.6rem;
+  }
+  .audio-player {
+    max-width: 100%;
+    padding: 14px;
+  }
+  button {
+    font-size: 16px;
+    width: 36px;
+    height: 36px;
+  }
+  .controls {
+    flex-wrap: wrap;
+  }
+  iframe, video {
+    max-width: 100%;
+    height: auto;
+  }
 }

@@ -71,6 +71,41 @@
   </div>
 </div>
 
+<style>
+@media (max-width: 768px) {
+  .app {
+    display: flex !important;
+    flex-direction: column !important;
+  }
+  .canvas-wrap {
+    order: -1;
+  }
+  #designerCanvas {
+    width: 100% !important;
+    height: auto !important;
+    aspect-ratio: 4 / 3;
+    max-width: 100%;
+  }
+  #overlay {
+    position: absolute !important;
+    top: 0;
+    left: 0;
+    width: 100% !important;
+    height: 100% !important;
+  }
+  .panel {
+    overflow: visible;
+  }
+  .row {
+    flex-wrap: wrap;
+  }
+  .row button, .row input, .row select {
+    width: 100%;
+    margin: 2px 0;
+  }
+}
+</style>
+
 <script>
 const canvas=document.getElementById('designerCanvas');
 const overlay=document.getElementById('overlay');

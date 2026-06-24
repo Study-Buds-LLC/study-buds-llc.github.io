@@ -32,8 +32,35 @@
         <div id="editor"></div>
         <pre id="output">// Output appears here ✨</pre>
     </div>
-    <script id="chatbotkit-widget" src="https://static.chatbotkit.com/integrations/widget/v2.js" data-widget="cmhrjr18600v53nfpp3ei998s"></script>
 </main>
+
+<style>
+@media (max-width: 768px) {
+  main {
+    display: flex;
+    flex-direction: column;
+  }
+  #fileTree {
+    width: 100% !important;
+    max-height: 200px;
+    overflow-y: auto;
+  }
+  #editorContainer {
+    width: 100% !important;
+  }
+  #editor {
+    min-height: 300px !important;
+  }
+  .toolbar {
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+  .toolbar button {
+    font-size: 0.85rem;
+    padding: 6px 10px;
+  }
+}
+</style>
 
 <script>
 let editor;

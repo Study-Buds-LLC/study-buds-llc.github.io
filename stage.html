@@ -16,19 +16,58 @@
   <h2>🎙️ Study Buds AI Assistant</h2>
 </header>
 
-<div class="stage">
-  <div class="ai">
-    <div class="ai-face">🤖</div>
-    <p><b>Study Bot</b></p>
-    <div id="log">Click the mic and talk!</div>
+  <div class="stage">
+    <div class="ai">
+      <div class="ai-face">🤖</div>
+      <p><b>Study Bot</b></p>
+      <div id="log">Click the mic and talk!</div>
 
-    <div class="controls">
-      <button onclick="startListening()" title="Talk">
-        <i class="fa-solid fa-microphone"></i>
-      </button>
+      <div class="controls">
+        <button onclick="startListening()" title="Talk">
+          <i class="fa-solid fa-microphone"></i>
+        </button>
+      </div>
     </div>
   </div>
-</div>
+
+<style>
+.stage {
+  display: flex;
+  justify-content: center;
+  padding: 20px;
+}
+.ai {
+  text-align: center;
+  max-width: 400px;
+  width: 100%;
+}
+.ai-face {
+  font-size: 4rem;
+  margin-bottom: 8px;
+}
+.controls {
+  margin-top: 16px;
+}
+.controls button {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  font-size: 1.5rem;
+}
+#log {
+  min-height: 2em;
+  padding: 10px;
+  background: rgba(0,0,0,0.04);
+  border-radius: 10px;
+  margin: 10px 0;
+  font-size: 1rem;
+}
+@media (max-width: 480px) {
+  .stage { padding: 10px; }
+  .ai-face { font-size: 3rem; }
+  #log { font-size: 0.9rem; padding: 8px; }
+}
+</style>
 
 <script>
 const log = document.getElementById("log");

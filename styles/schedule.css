@@ -9,19 +9,21 @@ body {
   background: #f8f9fa;
   display: flex;
   justify-content: center;
-  align-items: center;
-  height: 100vh;
+  align-items: flex-start;
+  min-height: 100vh;
   margin: 0;
+  padding: 12px;
 }
 
 .app {
   background: white;
-  width: 90%;
+  width: 100%;
   max-width: 800px;
   border-radius: 16px;
   box-shadow: 0 8px 24px rgba(60,64,67,0.15);
-  padding: 25px 30px;
+  padding: 20px 16px;
   text-align: center;
+  margin: 0 auto;
 }
 
 /* Header */

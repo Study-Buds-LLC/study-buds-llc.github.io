@@ -21,6 +21,23 @@
 
 <div class="experiment-container" id="experimentContainer"></div>
 
+<style>
+@media (max-width: 600px) {
+  .experiment-buttons {
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .experiment-buttons button {
+    font-size: 0.9rem;
+    padding: 8px 12px;
+  }
+  #experimentContainer {
+    min-height: 250px;
+    overflow: hidden;
+  }
+}
+</style>
+
 <script>
 const container = document.getElementById('experimentContainer');
 
